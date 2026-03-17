@@ -1,0 +1,152 @@
+{
+  "name": "antigravity-sync",
+  "displayName": "Antigravity Sync",
+  "description": "Sync your Antigravity skills, MCP config, and VS Code settings/extensions across devices via a private GitHub repository.",
+  "version": "1.1.0",
+  "publisher": "antigravity",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "keywords": ["antigravity", "sync", "settings", "extensions", "github"],
+  "icon": "images/icon.png",
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "antigravity-sync-container",
+          "title": "Antigravity Sync",
+          "icon": "images/activity-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "antigravity-sync-container": [
+        {
+          "id": "antigravitySyncView",
+          "name": "Sync Controls",
+          "icon": "images/activity-icon.svg"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "antigravity-sync.syncNow",
+          "when": "view == antigravitySyncView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "antigravity-sync.push",
+          "when": "view == antigravitySyncView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "antigravity-sync.pull",
+          "when": "view == antigravitySyncView",
+          "group": "navigation@3"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "antigravity-sync.initialize",
+        "title": "Initialize Sync",
+        "category": "Antigravity Sync",
+        "icon": "$(play-circle)"
+      },
+      {
+        "command": "antigravity-sync.syncNow",
+        "title": "Force Sync",
+        "category": "Antigravity Sync",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "antigravity-sync.push",
+        "title": "Push Settings",
+        "category": "Antigravity Sync",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "antigravity-sync.pull",
+        "title": "Pull Settings",
+        "category": "Antigravity Sync",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "antigravity-sync.restoreExtensions",
+        "title": "Restore Extensions",
+        "category": "Antigravity Sync",
+        "icon": "$(extensions)"
+      },
+      {
+        "command": "antigravity-sync.showStatus",
+        "title": "Show Sync Status",
+        "category": "Antigravity Sync",
+        "icon": "$(output)"
+      },
+      {
+        "command": "antigravity-sync.clearCredentials",
+        "title": "Clear Saved Credentials",
+        "category": "Antigravity Sync"
+      },
+      {
+        "command": "antigravity-sync.openTokenPage",
+        "title": "Create GitHub Token (opens browser)",
+        "category": "Antigravity Sync",
+        "icon": "$(link-external)"
+      },
+      {
+        "command": "antigravity-sync.openRepo",
+        "title": "Open Sync Repo on GitHub",
+        "category": "Antigravity Sync",
+        "icon": "$(github)"
+      },
+      {
+        "command": "antigravity-sync.refreshView",
+        "title": "Refresh",
+        "category": "Antigravity Sync",
+        "icon": "$(refresh)"
+      }
+    ],
+    "configuration": {
+      "title": "Antigravity Sync",
+      "properties": {
+        "antigravitySync.githubUsername": {
+          "type": "string",
+          "default": "",
+          "description": "Your GitHub username for the sync repository."
+        },
+        "antigravitySync.repoName": {
+          "type": "string",
+          "default": "antigravity-sync",
+          "description": "Name of the private GitHub repository used for syncing."
+        },
+        "antigravitySync.autoSync": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically sync settings when VS Code opens."
+        },
+        "antigravitySync.syncSkills": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include Antigravity global_skills/ folder in sync."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "vscode:prepublish": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.0.0",
+    "typescript": "^5.3.0"
+  }
+}
