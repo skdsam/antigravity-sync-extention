@@ -94,10 +94,14 @@ export function getPaths() {
         vscodeSettings: path.join(appData, 'Code', 'User', 'settings.json'),
         vscodeKeybindings: path.join(appData, 'Code', 'User', 'keybindings.json'),
         vscodeSnippets: path.join(appData, 'Code', 'User', 'snippets'),
+        vscodeMcpJson: path.join(appData, 'Code', 'User', 'mcp.json'),
+        vscodeChatModels: path.join(appData, 'Code', 'User', 'chatLanguageModels.json'),
+        rooCodeStorage: path.join(appData, 'Code', 'User', 'globalStorage', 'rooveterinaryinc.roo-code'),
         // Staging paths inside sync repo
         repoAntigravity: path.join(syncRoot, 'antigravity'),
         repoSkills: path.join(syncRoot, 'antigravity', 'global_skills'),
         repoVSCode: path.join(syncRoot, 'vscode'),
+        repoRooCode: path.join(syncRoot, 'vscode', 'roo-code'),
         repoExtensions: path.join(syncRoot, 'vscode', 'extensions.txt'),
         syncLog: path.join(syncRoot, 'sync.log'),
     };

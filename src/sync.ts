@@ -214,6 +214,15 @@ export async function pushSettings(): Promise<void> {
     log('Syncing VS Code snippets/...', 'INFO');
     syncDir(paths.vscodeSnippets, path.join(paths.repoVSCode, 'snippets'));
 
+    log('Copying VS Code mcp.json...', 'INFO');
+    copyFileIfExists(paths.vscodeMcpJson, path.join(paths.repoVSCode, 'mcp.json'));
+
+    log('Copying VS Code chatLanguageModels.json...', 'INFO');
+    copyFileIfExists(paths.vscodeChatModels, path.join(paths.repoVSCode, 'chatLanguageModels.json'));
+
+    log('Syncing Roo Code storage (may take a moment)...', 'INFO');
+    syncDir(paths.rooCodeStorage, paths.repoRooCode);
+
     log('Exporting VS Code extension list...', 'INFO');
     exportExtensionList(paths.repoExtensions);
     
@@ -296,6 +305,21 @@ export async function pullSettings(): Promise<void> {
 
     log('Restoring VS Code snippets/...', 'INFO');
     syncDir(path.join(paths.repoVSCode, 'snippets'), paths.vscodeSnippets);
+
+    if (fs.existsSync(path.join(paths.repoVSCode, 'mcp.json'))) {
+        log('Restoring mcp.json...', 'INFO');
+        copyFileIfExists(path.join(paths.repoVSCode, 'mcp.json'), paths.vscodeMcpJson);
+    }
+
+    if (fs.existsSync(path.join(paths.repoVSCode, 'chatLanguageModels.json'))) {
+        log('Restoring chatLanguageModels.json...', 'INFO');
+        copyFileIfExists(path.join(paths.repoVSCode, 'chatLanguageModels.json'), paths.vscodeChatModels);
+    }
+
+    if (fs.existsSync(paths.repoRooCode)) {
+        log('Restoring Roo Code storage...', 'INFO');
+        syncDir(paths.repoRooCode, paths.rooCodeStorage);
+    }
 
     // Restore extensions only if list changed
     if (fs.existsSync(paths.repoExtensions)) {

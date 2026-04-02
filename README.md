@@ -101,6 +101,9 @@ Click the **sync icon** in the Activity Bar (left sidebar) to open the **Antigra
 | **VS Code Keybindings** | `keybindings.json` |
 | **VS Code Snippets** | All snippet files |
 | **VS Code Extensions** | Saved as a list, reinstalled automatically |
+| **Roo Code Settings** | Custom instructions, prompt history, and models |
+| **Global Storage** | Specific extension data (e.g., `rooveterinaryinc.roo-code`) |
+| **Additional Configs** | `mcp.json`, `chatLanguageModels.json` |
 
 > **Note on extensions:** Binary VSIX files are not synced (they'd be gigabytes). Instead, the extension saves a list of your extension IDs and reinstalls them from the marketplace on any new device.
 
