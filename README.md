@@ -153,4 +153,16 @@ Or open the log file directly: `~\.antigravity-sync\sync.log`
 
 ---
 
+## Changelog
+
+### v1.2.2
+- **Windows CLI Resolution Fix**: Fixed an issue where `cmd.exe` would execute `Antigravity.exe` in Node mode instead of `antigravity.cmd`, which caused extension installations to fail with a "bad option: --install-extension" error.
+
+### v1.2.1
+- **Dynamic Editor Detection**: Automatically detects if running in Antigravity or standard VS Code and adjusts the AppData folder for syncing accordingly (e.g. `AppData/Roaming/Antigravity/User`).
+- **Dynamic CLI Command**: Automatically uses `antigravity --install-extension` instead of hardcoded `code` when running inside the Antigravity editor, fixing an issue where extensions would fail to restore.
+- **Manual Overrides**: Added `antigravitySync.cliCommand` and `antigravitySync.dataFolderName` settings to manually override auto-detection if needed.
+
+---
+
 *Built with the Antigravity AI coding assistant.*

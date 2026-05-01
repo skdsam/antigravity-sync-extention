@@ -79,24 +79,64 @@ export async function isInitialized(secrets: vscode.SecretStorage): Promise<bool
 }
 
 /**
+ * Detect the editor context (VS Code vs Antigravity etc.)
+ * Returns the AppData folder name and the CLI command.
+ */
+export function getEditorDetails() {
+    const appName = vscode.env.appName || 'Code';
+    let dataFolderName = 'Code';
+    let cliCmd = 'code';
+
+    if (appName.toLowerCase().includes('antigravity')) {
+        dataFolderName = 'Antigravity';
+        cliCmd = process.platform === 'win32' ? 'antigravity.cmd' : 'antigravity';
+    } else if (appName.toLowerCase().includes('insider')) {
+        dataFolderName = 'Code - Insiders';
+        cliCmd = process.platform === 'win32' ? 'code-insiders.cmd' : 'code-insiders';
+    } else if (appName.toLowerCase().includes('cursor')) {
+        dataFolderName = 'Cursor';
+        cliCmd = process.platform === 'win32' ? 'cursor.cmd' : 'cursor';
+    } else if (appName.toLowerCase().includes('windsurf')) {
+        dataFolderName = 'Windsurf';
+        cliCmd = process.platform === 'win32' ? 'windsurf.cmd' : 'windsurf';
+    } else {
+        cliCmd = process.platform === 'win32' ? 'code.cmd' : 'code';
+    }
+
+    const cfg = vscode.workspace.getConfiguration('antigravitySync');
+    const overrideCmd = cfg.get<string>('cliCommand');
+    if (overrideCmd && overrideCmd.trim() !== '') {
+        cliCmd = overrideCmd.trim();
+    }
+
+    const overrideDir = cfg.get<string>('dataFolderName');
+    if (overrideDir && overrideDir.trim() !== '') {
+        dataFolderName = overrideDir.trim();
+    }
+
+    return { dataFolderName, cliCmd };
+}
+
+/**
  * Well-known local paths on this machine.
  */
 export function getPaths() {
     const home = os.homedir();
     const appData = process.env.APPDATA || path.join(home, 'AppData', 'Roaming');
     const syncRoot = path.join(home, '.antigravity-sync');
+    const { dataFolderName } = getEditorDetails();
     return {
         syncRoot,
         antigravityRoot: path.join(home, '.gemini', 'antigravity'),
         mcpConfig: path.join(home, '.gemini', 'antigravity', 'mcp_config.json'),
         globalSkills: path.join(home, '.gemini', 'antigravity', 'global_skills'),
-        vscodeUserDir: path.join(appData, 'Code', 'User'),
-        vscodeSettings: path.join(appData, 'Code', 'User', 'settings.json'),
-        vscodeKeybindings: path.join(appData, 'Code', 'User', 'keybindings.json'),
-        vscodeSnippets: path.join(appData, 'Code', 'User', 'snippets'),
-        vscodeMcpJson: path.join(appData, 'Code', 'User', 'mcp.json'),
-        vscodeChatModels: path.join(appData, 'Code', 'User', 'chatLanguageModels.json'),
-        rooCodeStorage: path.join(appData, 'Code', 'User', 'globalStorage', 'rooveterinaryinc.roo-code'),
+        vscodeUserDir: path.join(appData, dataFolderName, 'User'),
+        vscodeSettings: path.join(appData, dataFolderName, 'User', 'settings.json'),
+        vscodeKeybindings: path.join(appData, dataFolderName, 'User', 'keybindings.json'),
+        vscodeSnippets: path.join(appData, dataFolderName, 'User', 'snippets'),
+        vscodeMcpJson: path.join(appData, dataFolderName, 'User', 'mcp.json'),
+        vscodeChatModels: path.join(appData, dataFolderName, 'User', 'chatLanguageModels.json'),
+        rooCodeStorage: path.join(appData, dataFolderName, 'User', 'globalStorage', 'rooveterinaryinc.roo-code'),
         // Staging paths inside sync repo
         repoAntigravity: path.join(syncRoot, 'antigravity'),
         repoSkills: path.join(syncRoot, 'antigravity', 'global_skills'),

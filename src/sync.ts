@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as cp from 'child_process';
-import { getPaths, getSettings } from './config';
+import { getPaths, getSettings, getEditorDetails } from './config';
 
 export const out = vscode.window.createOutputChannel('Antigravity Sync');
 
@@ -130,7 +130,8 @@ function writeReadme(syncRoot: string): void {
 //  EXTENSION LIST
 // ─────────────────────────────────────────────────────────────
 function exportExtensionList(destFile: string): void {
-    const result = cp.spawnSync('code', ['--list-extensions'], {
+    const { cliCmd } = getEditorDetails();
+    const result = cp.spawnSync(cliCmd, ['--list-extensions'], {
         encoding: 'utf8',
         timeout: 30_000,
         shell: true,
@@ -352,8 +353,10 @@ export async function installExtensions(extFile: string): Promise<{ installed: n
         .map(l => l.trim())
         .filter(Boolean);
 
+    const { cliCmd } = getEditorDetails();
+
     // Get currently installed
-    const currentResult = cp.spawnSync('code', ['--list-extensions'], {
+    const currentResult = cp.spawnSync(cliCmd, ['--list-extensions'], {
         encoding: 'utf8', timeout: 30_000, shell: true,
     });
     const current = new Set(
@@ -368,7 +371,7 @@ export async function installExtensions(extFile: string): Promise<{ installed: n
             continue;
         }
         log(`Installing extension: ${ext}`, 'INFO');
-        const r = cp.spawnSync('code', ['--install-extension', ext, '--force'], {
+        const r = cp.spawnSync(cliCmd, ['--install-extension', ext, '--force'], {
             encoding: 'utf8', timeout: 60_000, shell: true,
         });
         if (r.status === 0) {
