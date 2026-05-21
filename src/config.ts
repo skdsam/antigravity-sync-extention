@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as os from 'os';
 import * as path from 'path';
+import * as fs from 'fs';
 
 const SECRET_GITHUB_PAT = 'antigravity-sync.githubPat';
 
@@ -87,7 +88,10 @@ export function getEditorDetails() {
     let dataFolderName = 'Code';
     let cliCmd = 'code';
 
-    if (appName.toLowerCase().includes('antigravity')) {
+    if (appName.toLowerCase().includes('antigravity ide')) {
+        dataFolderName = 'Antigravity IDE';
+        cliCmd = process.platform === 'win32' ? 'antigravity-ide.cmd' : 'antigravity-ide';
+    } else if (appName.toLowerCase().includes('antigravity')) {
         dataFolderName = 'Antigravity';
         cliCmd = process.platform === 'win32' ? 'antigravity.cmd' : 'antigravity';
     } else if (appName.toLowerCase().includes('insider')) {
@@ -118,6 +122,51 @@ export function getEditorDetails() {
 }
 
 /**
+ * Detect the actual extensions directory in use.
+ */
+export function getExtensionsDir(): string {
+    const home = os.homedir();
+
+    // 1. Try to find the active extension directory from our own extension path
+    const self = vscode.extensions.getExtension('antigravity.antigravity-sync');
+    if (self && self.extensionPath) {
+        const parent = path.dirname(self.extensionPath);
+        if (parent.toLowerCase().endsWith('extensions')) {
+            return parent;
+        }
+    }
+
+    // 2. Try to find any active non-builtin extension's path
+    for (const ext of vscode.extensions.all) {
+        if (ext.packageJSON && ext.packageJSON.isBuiltin === false) {
+            const parent = path.dirname(ext.extensionPath);
+            if (parent.toLowerCase().endsWith('extensions')) {
+                return parent;
+            }
+        }
+    }
+
+    // 3. Fallback based on editor appName
+    const appName = vscode.env.appName || 'Code';
+    if (appName.toLowerCase().includes('antigravity ide')) {
+        const ideDir = path.join(home, '.antigravity-ide', 'extensions');
+        if (fs.existsSync(ideDir)) {
+            return ideDir;
+        }
+        return path.join(home, '.antigravity', 'extensions');
+    } else if (appName.toLowerCase().includes('antigravity')) {
+        return path.join(home, '.antigravity', 'extensions');
+    } else if (appName.toLowerCase().includes('insider')) {
+        return path.join(home, '.vscode-insiders', 'extensions');
+    } else if (appName.toLowerCase().includes('cursor')) {
+        return path.join(home, '.cursor', 'extensions');
+    } else if (appName.toLowerCase().includes('windsurf')) {
+        return path.join(home, '.windsurf', 'extensions');
+    }
+    return path.join(home, '.vscode', 'extensions');
+}
+
+/**
  * Well-known local paths on this machine.
  */
 export function getPaths() {
@@ -137,6 +186,8 @@ export function getPaths() {
         vscodeMcpJson: path.join(appData, dataFolderName, 'User', 'mcp.json'),
         vscodeChatModels: path.join(appData, dataFolderName, 'User', 'chatLanguageModels.json'),
         rooCodeStorage: path.join(appData, dataFolderName, 'User', 'globalStorage', 'rooveterinaryinc.roo-code'),
+        // Extensions path
+        extensionsDir: getExtensionsDir(),
         // Staging paths inside sync repo
         repoAntigravity: path.join(syncRoot, 'antigravity'),
         repoSkills: path.join(syncRoot, 'antigravity', 'global_skills'),

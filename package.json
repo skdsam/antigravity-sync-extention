@@ -2,7 +2,7 @@
   "name": "antigravity-sync",
   "displayName": "Antigravity Sync",
   "description": "Sync your Antigravity skills, MCP config, and VS Code settings/extensions across devices via a private GitHub repository.",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "publisher": "antigravity",
   "engines": {
     "vscode": "^1.85.0"

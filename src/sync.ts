@@ -131,7 +131,9 @@ function writeReadme(syncRoot: string): void {
 // ─────────────────────────────────────────────────────────────
 function exportExtensionList(destFile: string): void {
     const { cliCmd } = getEditorDetails();
-    const result = cp.spawnSync(cliCmd, ['--list-extensions'], {
+    const paths = getPaths();
+    log(`Exporting extensions list using command: ${cliCmd} --extensions-dir "${paths.extensionsDir}" --list-extensions`, 'INFO');
+    const result = cp.spawnSync(cliCmd, ['--extensions-dir', paths.extensionsDir, '--list-extensions'], {
         encoding: 'utf8',
         timeout: 30_000,
         shell: true,
@@ -354,9 +356,11 @@ export async function installExtensions(extFile: string): Promise<{ installed: n
         .filter(Boolean);
 
     const { cliCmd } = getEditorDetails();
+    const paths = getPaths();
 
     // Get currently installed
-    const currentResult = cp.spawnSync(cliCmd, ['--list-extensions'], {
+    log(`Getting currently installed extensions using command: ${cliCmd} --extensions-dir "${paths.extensionsDir}" --list-extensions`, 'INFO');
+    const currentResult = cp.spawnSync(cliCmd, ['--extensions-dir', paths.extensionsDir, '--list-extensions'], {
         encoding: 'utf8', timeout: 30_000, shell: true,
     });
     const current = new Set(
@@ -371,7 +375,7 @@ export async function installExtensions(extFile: string): Promise<{ installed: n
             continue;
         }
         log(`Installing extension: ${ext}`, 'INFO');
-        const r = cp.spawnSync(cliCmd, ['--install-extension', ext, '--force'], {
+        const r = cp.spawnSync(cliCmd, ['--extensions-dir', paths.extensionsDir, '--install-extension', ext, '--force'], {
             encoding: 'utf8', timeout: 60_000, shell: true,
         });
         if (r.status === 0) {
