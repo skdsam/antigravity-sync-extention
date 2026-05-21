@@ -19,8 +19,8 @@
 
 Since this extension is not yet on the Marketplace, you must install it manually from the `.vsix` file:
 
-1. Download the `antigravity-sync-1.1.0.vsix` file.
-2. In VS Code, open the **Extensions** view (`Ctrl+Shift+X`).
+1. Download the latest `antigravity-sync-1.2.3.vsix` file from this repository.
+2. In VS Code or Antigravity IDE, open the **Extensions** view (`Ctrl+Shift+X`).
 3. Click the **...** (Views and More Actions) menu in the top right.
 4. Select **Install from VSIX...**
 5. Select the downloaded `.vsix` file.
@@ -154,6 +154,12 @@ Or open the log file directly: `~\.antigravity-sync\sync.log`
 ---
 
 ## Changelog
+
+### v1.2.3
+- **Antigravity IDE Support**: Differentiates between the standard `Antigravity` profile and the new `Antigravity IDE` profile.
+  - Automatically targets `AppData/Roaming/Antigravity IDE/User` for settings sync.
+  - Uses `antigravity-ide.cmd` on Windows (or `antigravity-ide` on unix) for extension installations.
+  - Robustly falls back to `.antigravity\extensions` directory if `.antigravity-ide\extensions` is empty or not in use.
 
 ### v1.2.2
 - **Windows CLI Resolution Fix**: Fixed an issue where `cmd.exe` would execute `Antigravity.exe` in Node mode instead of `antigravity.cmd`, which caused extension installations to fail with a "bad option: --install-extension" error.
